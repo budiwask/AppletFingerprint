@@ -50,10 +50,12 @@ public class Main extends JApplet {
 		setLayout(new BorderLayout());
 		add(center, BorderLayout.CENTER);
 		setSize(200,150);
+//		JOptionPane.showMessageDialog(this, this.getParameter("filename"));
 	}
 
+    //Retrieve the param from webpage by calling this.getParameter(<paramname>)
     protected void onEnroll() {
-		new EnrollmentForm();
+		new EnrollmentForm(this.getParameter("filename"));
 	}
     
     protected void onVerify() {

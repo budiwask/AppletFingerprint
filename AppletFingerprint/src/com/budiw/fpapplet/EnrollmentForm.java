@@ -8,9 +8,16 @@ public class EnrollmentForm extends CaptureForm
 {
 	private static final long serialVersionUID = 7675828998942686645L;
 	private DPFPEnrollment enroller = DPFPGlobal.getEnrollmentFactory().createEnrollment();
-	private static final String TEST_FILEPATH = System.getProperty("user.home") + "\\template.fpt";
+	private static final String DEFAULT_TEMPLATE_NAME = "template";
+	private final String templateName, templatePath;
 	
-	public EnrollmentForm() {
+	public EnrollmentForm(String templateName) {
+		super();
+		if(templateName == "" || templateName == null)
+			this.templateName = DEFAULT_TEMPLATE_NAME;
+		else
+			this.templateName = templateName;
+		this.templatePath = System.getProperty("user.home") + "\\" + this.templateName + ".fpt";
 	}
 	
 	protected void init()
@@ -40,8 +47,8 @@ public class EnrollmentForm extends CaptureForm
 			{
 				case TEMPLATE_STATUS_READY:	// report success and stop capturing
 					stop();
-					writeFile(TEST_FILEPATH, enroller.getTemplate().serialize());
-					uploadFingerprint(TEST_FILEPATH, false);
+					writeFile(templatePath, enroller.getTemplate().serialize());
+					uploadFingerprint(templateName, false);
 					setVisible(false);
 					break;
 

@@ -20,6 +20,7 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.util.EntityUtils;
 
@@ -98,6 +99,11 @@ public class CaptureForm extends JFrame
 		setLocationRelativeTo(null);
 		setVisible(true);
 	}
+	
+//	public CaptureForm(String uploadFilename) {
+//		this();
+//		this.uploadFilename = uploadFilename;
+//	}
 
 	protected void init()
 	{
@@ -206,12 +212,21 @@ public class CaptureForm extends JFrame
 	}
 
 	// Upload files using HTTP Post, return the body of the response as String
+	//input: filename
 	@SuppressWarnings("unused")
-	protected String uploadFingerprint(String filepath, boolean isVerification) {
+	protected String uploadFingerprint(String filename, boolean isVerification) {
+		String filepath;
+		if(isVerification) {
+			filepath = System.getProperty("user.home") + "\\" + filename + ".fpp";
+		} else
+			filepath = System.getProperty("user.home") + "\\" + filename + ".fpt";
 		HttpClient httpclient = new DefaultHttpClient();
 		httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
 		HttpPost httppost = new HttpPost("https://localhost/upload.php");
+		BasicHttpParams fileParam = new BasicHttpParams();
+		fileParam.setParameter("filename", filename);
+		httppost.setParams(fileParam);
 		File file = new File(filepath);
 
 		MultipartEntity mpEntity = new MultipartEntity();

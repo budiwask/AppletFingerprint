@@ -7,12 +7,20 @@ import com.digitalpersona.onetouch.*;
 public class VerificationForm extends CaptureForm
 {
 	private static final long serialVersionUID = -9160876912046100450L;
-	private static final String FEATURE_PATH = System.getProperty("user.home") + "\\inputfeature.fpp";
+	private static final String DEFAULT_FEATURE_NAME = "inputfeature";
+	private static final String DEFAULT_FEATURE_PATH = System.getProperty("user.home") + "\\"  + DEFAULT_FEATURE_NAME + ".fpp";
 	private static final String VERIFICATION_KEYWORD = "VERIFIED";
 	
-	public VerificationForm() {
+	
+	public VerificationForm(String filename) {
+		super();
+//		featurePath = System.getProperty("user.home") + "\\"  + filename + ".fpp";
 	}
 	
+	public VerificationForm() {
+		super();
+	}
+
 	protected void init()
 	{
 		super.init();
@@ -30,8 +38,8 @@ public class VerificationForm extends CaptureForm
 		if (features != null)
 		{
 			//Write to file and upload to server for comparison. Verification format must be *.fpp
-			writeFile(FEATURE_PATH, features.serialize());
-			String response = uploadFingerprint(FEATURE_PATH, true);
+			writeFile(DEFAULT_FEATURE_PATH, features.serialize());
+			String response = uploadFingerprint(DEFAULT_FEATURE_NAME, true);
 			if(response.indexOf(VERIFICATION_KEYWORD) != -1) {
 				JOptionPane.showMessageDialog(this, "Verified");
 				setVisible(false);
