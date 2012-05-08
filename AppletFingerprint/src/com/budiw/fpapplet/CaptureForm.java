@@ -198,14 +198,14 @@ public class CaptureForm extends JFrame
 			return null;
 		}
 	}
-
-	protected void uploadFingerprint() {
+	
+	// Upload files using HTTP Post
+	protected void uploadFingerprint(String filepath, boolean isVerification) {
 		HttpClient httpclient = new DefaultHttpClient();
 		httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
 		HttpPost httppost = new HttpPost("https://localhost/upload.php");
-//		String curDir = System.getProperty("user.dir");
-		File file = new File("rec.txt");
+		File file = new File(filepath);
 
 		MultipartEntity mpEntity = new MultipartEntity();
 		ContentBody cbFile = new FileBody(file, "image/jpeg");
@@ -213,7 +213,7 @@ public class CaptureForm extends JFrame
 
 
 		httppost.setEntity(mpEntity);
-		System.out.println("executing request " + httppost.getRequestLine());
+//		System.out.println("executing request " + httppost.getRequestLine());
 
 		try {
 			HttpResponse response = httpclient.execute(httppost);

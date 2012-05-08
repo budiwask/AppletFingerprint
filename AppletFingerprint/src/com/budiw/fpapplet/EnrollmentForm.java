@@ -1,5 +1,8 @@
 package com.budiw.fpapplet;
 
+import java.io.File;
+import java.io.FileOutputStream;
+
 import com.digitalpersona.onetouch.*;
 import com.digitalpersona.onetouch.processing.*;
 import javax.swing.JOptionPane;
@@ -8,11 +11,11 @@ public class EnrollmentForm extends CaptureForm
 {
 	private static final long serialVersionUID = 7675828998942686645L;
 	private DPFPEnrollment enroller = DPFPGlobal.getEnrollmentFactory().createEnrollment();
+	private static final String TEST_FILEPATH = System.getProperty("user.home") + "\\template2.fpt";
 	
 	public EnrollmentForm() {
 	}
 	
-	@Override 
 	protected void init()
 	{
 		super.init();
@@ -20,9 +23,7 @@ public class EnrollmentForm extends CaptureForm
 		updateStatus();
 	}
 
-	@Override 
 	protected void process(DPFPSample sample) {
-		uploadFingerprint();
 		super.process(sample);
 		// Process the sample and create a feature set for the enrollment purpose.
 		DPFPFeatureSet features = extractFeatures(sample, DPFPDataPurpose.DATA_PURPOSE_ENROLLMENT);
@@ -42,6 +43,8 @@ public class EnrollmentForm extends CaptureForm
 			{
 				case TEMPLATE_STATUS_READY:	// report success and stop capturing
 					stop();
+					writeTemplateToFile();
+					uploadFingerprint(TEST_FILEPATH, false);
 					setPrompt("Click Close, and then click Fingerprint Verification.");
 					break;
 
@@ -56,6 +59,17 @@ public class EnrollmentForm extends CaptureForm
 		}
 	}
 	
+	private void writeTemplateToFile() {
+		try {
+			FileOutputStream out = new FileOutputStream(new File(TEST_FILEPATH));
+			out.write(enroller.getTemplate().serialize());
+			out.flush();
+			out.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void updateStatus()
 	{
 		// Show number of samples needed.
