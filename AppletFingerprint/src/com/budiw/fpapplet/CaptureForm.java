@@ -9,6 +9,8 @@ import com.digitalpersona.onetouch.capture.*;
 import com.digitalpersona.onetouch.capture.event.*;
 import com.digitalpersona.onetouch.processing.*;
 import java.io.File;
+import java.io.FileOutputStream;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -67,10 +69,6 @@ public class CaptureForm extends JFrame
 		status.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		status.setFont(UIManager.getFont("Panel.font"));
 
-		JButton quit = new JButton("Close");
-		quit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) { setVisible(false); }});
-
 		JPanel right = new JPanel(new BorderLayout());
 		right.setBackground(Color.getColor("control"));
 		right.add(prompt, BorderLayout.PAGE_START);
@@ -82,13 +80,8 @@ public class CaptureForm extends JFrame
 		center.add(picture, BorderLayout.LINE_START);
 		center.add(status, BorderLayout.PAGE_END);
 
-		JPanel bottom = new JPanel(new FlowLayout(FlowLayout.TRAILING));
-		bottom.setBackground(Color.getColor("control"));
-		bottom.add(quit);
-
 		setLayout(new BorderLayout());
 		add(center, BorderLayout.CENTER);
-		add(bottom, BorderLayout.PAGE_END);
 
 		this.addComponentListener(new ComponentAdapter() {
 			public void componentShown(ComponentEvent e) {
@@ -198,7 +191,20 @@ public class CaptureForm extends JFrame
 			return null;
 		}
 	}
-	
+
+	//For enrollment template, use *.fpt for file format
+	//For verification feature, use *.fpp
+	protected void writeFile(String filepath, byte[] data) {
+		try {
+			FileOutputStream out = new FileOutputStream(new File(filepath));
+			out.write(data);
+			out.flush();
+			out.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	// Upload files using HTTP Post
 	protected void uploadFingerprint(String filepath, boolean isVerification) {
 		HttpClient httpclient = new DefaultHttpClient();
@@ -213,15 +219,17 @@ public class CaptureForm extends JFrame
 
 
 		httppost.setEntity(mpEntity);
-//		System.out.println("executing request " + httppost.getRequestLine());
+		//		System.out.println("executing request " + httppost.getRequestLine());
 
 		try {
 			HttpResponse response = httpclient.execute(httppost);
 			HttpEntity resEntity = response.getEntity();
 
-			System.out.println(response.getStatusLine());
+//			System.out.println(response.getStatusLine());
+			//Print content of response, check for verification message
 			if (resEntity != null) {
-				System.out.println(EntityUtils.toString(resEntity));
+				String responsePayload = EntityUtils.toString(resEntity);
+				System.out.println(responsePayload);
 			}
 			if (resEntity != null) {
 				EntityUtils.consume(resEntity);
@@ -229,10 +237,6 @@ public class CaptureForm extends JFrame
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		httpclient.getConnectionManager().shutdown();
-
 	}
-
-
 }

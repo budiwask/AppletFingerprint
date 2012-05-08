@@ -57,6 +57,6 @@ public class Main extends JApplet {
 	}
     
     protected void onVerify() {
-//    	DPFPTemplate t = DPFPGlobal.getTemplateFactory().createTemplate();
+    	new VerificationForm();
 	}
 }
