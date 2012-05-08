@@ -10,21 +10,6 @@ import com.digitalpersona.onetouch.capture.event.*;
 import com.digitalpersona.onetouch.processing.*;
 import java.io.File;
 import java.io.FileOutputStream;
-//import java.io.UnsupportedEncodingException;
-//
-//import org.apache.http.HttpEntity;
-//import org.apache.http.HttpResponse;
-//import org.apache.http.HttpVersion;
-//import org.apache.http.client.HttpClient;
-//import org.apache.http.client.methods.HttpPost;
-//import org.apache.http.entity.mime.MultipartEntity;
-//import org.apache.http.entity.mime.content.ContentBody;
-//import org.apache.http.entity.mime.content.FileBody;
-//import org.apache.http.entity.mime.content.StringBody;
-//import org.apache.http.impl.client.DefaultHttpClient;
-//import org.apache.http.params.CoreProtocolPNames;
-//import org.apache.http.util.EntityUtils;
-
 
 public class CaptureForm extends JFrame
 {
@@ -211,63 +196,4 @@ public class CaptureForm extends JFrame
 			e.printStackTrace();
 		}
 	}
-
-	// Upload files using HTTP Post, return the body of the response as String
-	//input: filename, output: HTTP Response
-	//This method really needs to be split
-//	@SuppressWarnings("unused")
-//	protected String uploadFingerprint(String filename, boolean isVerification) {
-//		String filepath;
-//		if(isVerification) {
-//			filepath = System.getProperty("user.home") + "\\" + filename + ".fpp";
-//		} else
-//			filepath = System.getProperty("user.home") + "\\" + filename + ".fpt";
-//		HttpClient httpclient = new DefaultHttpClient();
-//		httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
-//
-//		HttpPost httppost = new HttpPost("https://localhost/upload.php");
-//		File file = new File(filepath);
-//
-//		//This will appear on $_FILES
-//		MultipartEntity mpEntity = new MultipartEntity();
-//		ContentBody cbFile = new FileBody(file, "image/jpeg");
-//		mpEntity.addPart("userfile", cbFile);
-//		
-//		//This will appear on $_POST
-//		ContentBody tName = null;
-//		try {
-//			tName = new StringBody(VerificationForm.DEFAULT_FEATURE_PATH);
-//		} catch (UnsupportedEncodingException e1) {
-//			e1.printStackTrace();
-//		}
-//		mpEntity.addPart("templateName", tName);
-//
-//
-//		httppost.setEntity(mpEntity);
-//		//		System.out.println("executing request " + httppost.getRequestLine());
-//
-//		try {
-//			HttpResponse response = httpclient.execute(httppost);
-//			HttpEntity resEntity = response.getEntity();
-//			
-////			System.out.println(response.getStatusLine());
-//			
-//			//Print content of response, check for verification message
-//			if (resEntity != null) {
-//				String responsePayload = EntityUtils.toString(resEntity);
-//				httpclient.getConnectionManager().shutdown();
-//				System.out.println(responsePayload);
-//				return responsePayload;
-//			} 
-//			if (resEntity != null) {
-//				EntityUtils.consume(resEntity);
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		httpclient.getConnectionManager().shutdown();
-//		//When response is null, return empty String
-//		return "";
-//		
-//	}
 }
