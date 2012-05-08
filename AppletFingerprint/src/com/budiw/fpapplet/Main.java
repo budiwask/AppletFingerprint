@@ -55,10 +55,10 @@ public class Main extends JApplet {
 
     //Retrieve the param from webpage by calling this.getParameter(<paramname>)
     protected void onEnroll() {
-		new EnrollmentForm(this.getParameter("filename"));
+		new EnrollmentForm(this.getParameter("templateName"));
 	}
     
     protected void onVerify() {
-    	new VerificationForm();
+    	new VerificationForm(this.getParameter("templateName"));
 	}
 }

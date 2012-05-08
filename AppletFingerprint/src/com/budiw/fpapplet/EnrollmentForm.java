@@ -1,14 +1,28 @@
 package com.budiw.fpapplet;
 
+import java.io.File;
+
 import com.digitalpersona.onetouch.*;
 import com.digitalpersona.onetouch.processing.*;
 import javax.swing.JOptionPane;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.util.EntityUtils;
 
 public class EnrollmentForm extends CaptureForm
 {
 	private static final long serialVersionUID = 7675828998942686645L;
 	private DPFPEnrollment enroller = DPFPGlobal.getEnrollmentFactory().createEnrollment();
-	private static final String DEFAULT_TEMPLATE_NAME = "template";
+	public static final String DEFAULT_TEMPLATE_NAME = "template";
 	private final String templateName, templatePath;
 	
 	public EnrollmentForm(String templateName) {
@@ -48,7 +62,7 @@ public class EnrollmentForm extends CaptureForm
 				case TEMPLATE_STATUS_READY:	// report success and stop capturing
 					stop();
 					writeFile(templatePath, enroller.getTemplate().serialize());
-					uploadFingerprint(templateName, false);
+					uploadTemplate();
 					setVisible(false);
 					break;
 
@@ -67,6 +81,42 @@ public class EnrollmentForm extends CaptureForm
 	{
 		// Show number of samples needed.
 		setStatus(String.format("Fingerprint samples needed: %1$s", enroller.getFeaturesNeeded()));
+	}
+	
+	private void uploadTemplate() {
+		HttpClient httpclient = new DefaultHttpClient();
+		httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		HttpPost httppost = new HttpPost("https://localhost/upload.php");
+		File file = new File(templatePath);
+
+		//This will appear on $_FILES
+		MultipartEntity mpEntity = new MultipartEntity();
+		ContentBody cbFile = new FileBody(file, "image/jpeg");
+		mpEntity.addPart("userfile", cbFile);
+
+		httppost.setEntity(mpEntity);
+		//		System.out.println("executing request " + httppost.getRequestLine());
+
+		try {
+			HttpResponse response = httpclient.execute(httppost);
+			HttpEntity resEntity = response.getEntity();
+			
+//			System.out.println(response.getStatusLine());
+			
+			//Print content of response, check for verification message
+			if (resEntity != null) {
+				String responsePayload = EntityUtils.toString(resEntity);
+				httpclient.getConnectionManager().shutdown();
+				System.out.println(responsePayload);
+			} 
+			if (resEntity != null) {
+				EntityUtils.consume(resEntity);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		httpclient.getConnectionManager().shutdown();
 	}
 	
 }
