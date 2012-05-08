@@ -205,8 +205,9 @@ public class CaptureForm extends JFrame
 		}
 	}
 
-	// Upload files using HTTP Post
-	protected void uploadFingerprint(String filepath, boolean isVerification) {
+	// Upload files using HTTP Post, return the body of the response as String
+	@SuppressWarnings("unused")
+	protected String uploadFingerprint(String filepath, boolean isVerification) {
 		HttpClient httpclient = new DefaultHttpClient();
 		httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
@@ -224,13 +225,16 @@ public class CaptureForm extends JFrame
 		try {
 			HttpResponse response = httpclient.execute(httppost);
 			HttpEntity resEntity = response.getEntity();
-
+			
 //			System.out.println(response.getStatusLine());
+			
 			//Print content of response, check for verification message
 			if (resEntity != null) {
 				String responsePayload = EntityUtils.toString(resEntity);
-				System.out.println(responsePayload);
-			}
+				httpclient.getConnectionManager().shutdown();
+				return responsePayload;
+//				System.out.println(responsePayload);
+			} 
 			if (resEntity != null) {
 				EntityUtils.consume(resEntity);
 			}
@@ -238,5 +242,8 @@ public class CaptureForm extends JFrame
 			e.printStackTrace();
 		}
 		httpclient.getConnectionManager().shutdown();
+		//When response is null, return empty String
+		return "";
+		
 	}
 }

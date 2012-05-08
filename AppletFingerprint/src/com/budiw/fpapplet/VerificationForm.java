@@ -1,11 +1,14 @@
 package com.budiw.fpapplet;
 
+import javax.swing.JOptionPane;
+
 import com.digitalpersona.onetouch.*;
 
 public class VerificationForm extends CaptureForm
 {
 	private static final long serialVersionUID = -9160876912046100450L;
 	private static final String FEATURE_PATH = System.getProperty("user.home") + "\\inputfeature.fpp";
+	private static final String VERIFICATION_KEYWORD = "VERIFIED";
 	
 	public VerificationForm() {
 	}
@@ -13,7 +16,7 @@ public class VerificationForm extends CaptureForm
 	protected void init()
 	{
 		super.init();
-		this.setTitle("Fingerprint Enrollment");
+		this.setTitle("Fingerprint Verification");
 		updateStatus(0);
 	}
 
@@ -28,11 +31,12 @@ public class VerificationForm extends CaptureForm
 		{
 			//Write to file and upload to server for comparison. Verification format must be *.fpp
 			writeFile(FEATURE_PATH, features.serialize());
-			uploadFingerprint(FEATURE_PATH, true);
-			/*if (result.isVerified())
-				makeReport("The fingerprint was VERIFIED.");
-			else
-				makeReport("The fingerprint was NOT VERIFIED.");*/
+			String response = uploadFingerprint(FEATURE_PATH, true);
+			if(response.indexOf(VERIFICATION_KEYWORD) != -1) {
+				JOptionPane.showMessageDialog(this, "Verified");
+				setVisible(false);
+			} else 
+				JOptionPane.showMessageDialog(this, "DENIED", "FAILED VERIFICATION", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
