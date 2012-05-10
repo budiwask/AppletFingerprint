@@ -1,9 +1,6 @@
 package com.budiw.fpapplet;
 
 import java.io.File;
-
-import com.digitalpersona.onetouch.*;
-import com.digitalpersona.onetouch.processing.*;
 import javax.swing.JOptionPane;
 
 import org.apache.http.HttpEntity;
@@ -17,6 +14,13 @@ import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.util.EntityUtils;
+
+import com.digitalpersona.onetouch.DPFPDataPurpose;
+import com.digitalpersona.onetouch.DPFPFeatureSet;
+import com.digitalpersona.onetouch.DPFPGlobal;
+import com.digitalpersona.onetouch.DPFPSample;
+import com.digitalpersona.onetouch.processing.DPFPEnrollment;
+import com.digitalpersona.onetouch.processing.DPFPImageQualityException;
 
 public class EnrollmentForm extends CaptureForm
 {
