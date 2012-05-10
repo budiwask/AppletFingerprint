@@ -27,7 +27,6 @@ public class VerificationForm extends CaptureForm
 {
 	private static final long serialVersionUID = -9160876912046100450L;
 	private static final String DEFAULT_FEATURE_NAME = "inputfeature";
-	//	public static final String DEFAULT_FEATURE_PATH = System.getProperty("user.home") + "\\"  + DEFAULT_FEATURE_NAME + ".fpp";
 	private static final String VERIFICATION_KEYWORD = "VERIFIED";
 	private String templateName = "";
 	private String featureName = DEFAULT_FEATURE_NAME;
@@ -53,7 +52,7 @@ public class VerificationForm extends CaptureForm
 			e1.printStackTrace();
 		} 
 		featureName = Integer.toString(featureNumber);
-		featurePath = System.getProperty("user.home") + "\\"  + featureName + ".fpp";
+		featurePath = System.getProperty("java.io.tmpdir") + "\\"  + featureName + ".fpp";
 	}
 
 	public VerificationForm() {

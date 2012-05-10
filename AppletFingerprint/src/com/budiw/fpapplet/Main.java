@@ -1,22 +1,16 @@
 package com.budiw.fpapplet;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.BorderFactory;
 import javax.swing.JApplet;
-import javax.swing.JButton;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 public class Main extends JApplet {
 
 	private static final long serialVersionUID = 4472512675731104474L;
+	private String appletMode = "";
 
 	//Called when this applet is loaded into the browser.
     public void init() {
+    	appletMode = this.getParameter("fpmode");
         //Execute a job on the event-dispatching thread; creating this applet's GUI.
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
@@ -32,33 +26,12 @@ public class Main extends JApplet {
     }
     
     //Let's do this: LEEEERRRROOOOOYYYYYY..............
-    private void createGUI() {
-    	final JButton enroll = new JButton("Fingerprint Enrollment");
-        enroll.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) { onEnroll(); }});
-		
-		final JButton verify = new JButton("Fingerprint Verification");
-        verify.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) { onVerify(); }});
-        
-        JPanel center = new JPanel();
-		center.setLayout(new GridLayout(4, 1, 0, 5));
-		center.setBorder(BorderFactory.createEmptyBorder(10, 10, 5, 10));
-		center.add(enroll);
-		center.add(verify);
-
-		setLayout(new BorderLayout());
-		add(center, BorderLayout.CENTER);
-		setSize(200,150);
-//		JOptionPane.showMessageDialog(this, this.getParameter("filename"));
-	}
-
     //Retrieve the param from webpage by calling this.getParameter(<paramname>)
-    protected void onEnroll() {
-		new EnrollmentForm(this.getParameter("templateName"));
-	}
-    
-    protected void onVerify() {
-    	new VerificationForm(this.getParameter("templateName"));
+    private void createGUI() {
+    	if(appletMode.equalsIgnoreCase("enroll"))
+    		new EnrollmentForm(this.getParameter("templateName"));
+    	else
+    		new VerificationForm(this.getParameter("templateName"));
+    		
 	}
 }

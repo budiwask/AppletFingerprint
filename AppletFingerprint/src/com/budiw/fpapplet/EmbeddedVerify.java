@@ -7,6 +7,7 @@ public class EmbeddedVerify extends JApplet {
 	private static final long serialVersionUID = 3688292316784751274L;
 	private VerificationForm vf = null;
 	public void init() {
+		System.out.println(System.getProperties().toString());
         
 		setSize(0,0);
 		//Check if the applet is not open already
