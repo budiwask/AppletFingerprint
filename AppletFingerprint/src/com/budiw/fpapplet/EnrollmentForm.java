@@ -65,6 +65,7 @@ public class EnrollmentForm extends CaptureForm
 					writeFile(templatePath, enroller.getTemplate().serialize());
 					uploadTemplate();
 					setVisible(false);
+					System.exit(0);
 					break;
 
 				case TEMPLATE_STATUS_FAILED:	// report failure and restart capturing
