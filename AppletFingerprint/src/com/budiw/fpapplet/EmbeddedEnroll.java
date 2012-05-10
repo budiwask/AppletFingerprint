@@ -3,9 +3,9 @@ package com.budiw.fpapplet;
 import javax.swing.JApplet;
 import javax.swing.SwingUtilities;
 
-public class EmbeddedVerify extends JApplet {
-	private static final long serialVersionUID = 3688292316784751274L;
-	
+public class EmbeddedEnroll extends JApplet{
+
+	private static final long serialVersionUID = 8148893385869648404L;
 	public void init() {
         //Execute a job on the event-dispatching thread; creating this applet's GUI.
 		setSize(0,0);
@@ -23,6 +23,6 @@ public class EmbeddedVerify extends JApplet {
     }
 	
 	private void createGUI() {
-		new VerificationForm(this.getParameter("templateName"));		
+		new EnrollmentForm(this.getParameter("templateName"));		
 	}
 }

@@ -32,6 +32,7 @@ public class EnrollmentForm extends CaptureForm
 		else
 			this.templateName = templateName;
 		this.templatePath = System.getProperty("user.home") + "\\" + this.templateName + ".fpt";
+		setAlwaysOnTop(true);
 	}
 	
 	protected void init()

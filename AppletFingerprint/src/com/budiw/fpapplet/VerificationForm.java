@@ -58,6 +58,8 @@ public class VerificationForm extends CaptureForm
 
 	public VerificationForm() {
 		super();
+		setVisible(true);
+		setAlwaysOnTop(true);
 	}
 
 	protected void init()
