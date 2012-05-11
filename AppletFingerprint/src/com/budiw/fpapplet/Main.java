@@ -3,14 +3,18 @@ package com.budiw.fpapplet;
 import javax.swing.JApplet;
 import javax.swing.SwingUtilities;
 
+import netscape.javascript.JSObject;
+
 public class Main extends JApplet {
 
 	private static final long serialVersionUID = 4472512675731104474L;
 	private String appletMode = "";
+	private JSObject jso = null;
 
 	//Called when this applet is loaded into the browser.
     public void init() {
     	appletMode = this.getParameter("fpmode");
+    	jso = JSObject.getWindow(this);
         //Execute a job on the event-dispatching thread; creating this applet's GUI.
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
@@ -31,7 +35,7 @@ public class Main extends JApplet {
     	if(appletMode.equalsIgnoreCase("enroll"))
     		new EnrollmentForm(this.getParameter("templateName"));
     	else
-    		new VerificationForm(this.getParameter("templateName"));
+    		new VerificationForm(this.getParameter("templateName"), jso);
     		
 	}
 }

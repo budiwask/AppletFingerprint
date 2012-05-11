@@ -8,6 +8,8 @@ import java.util.Random;
 
 import javax.swing.JOptionPane;
 
+import netscape.javascript.JSObject;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -21,6 +23,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.util.EntityUtils;
 
+
 import com.digitalpersona.onetouch.DPFPDataPurpose;
 import com.digitalpersona.onetouch.DPFPFeatureSet;
 import com.digitalpersona.onetouch.DPFPSample;
@@ -33,10 +36,12 @@ public class VerificationForm extends CaptureForm
 	private String templateName = "";
 	private String featureName = DEFAULT_FEATURE_NAME;
 	private String featurePath = "";
+	private JSObject jso = null;
 
 
-	public VerificationForm(String templateName) {
+	public VerificationForm(String templateName, JSObject jso) {
 		this();
+		this.jso = jso;
 		if(templateName == "" || templateName == null)
 			this.templateName = EnrollmentForm.DEFAULT_TEMPLATE_NAME;
 		else
@@ -68,6 +73,7 @@ public class VerificationForm extends CaptureForm
 		super.init();
 		this.setTitle("Fingerprint Verification");
 		updateStatus(0);
+		
 	}
 
 	protected void process(DPFPSample sample) {
@@ -83,8 +89,10 @@ public class VerificationForm extends CaptureForm
 			writeFile(featurePath, features.serialize());
 			String response = uploadFeature();
 			if(response.indexOf(VERIFICATION_KEYWORD) != -1) {
-				JOptionPane.showMessageDialog(this, "Verified");
+				//JOptionPane.showMessageDialog(this, "Verified");
 				setVisible(false);
+				jso.call("updateFingerprintStatus", new String[] {"Verified"} );
+//				System.out.println(jso.toString());
 				System.exit(0);
 			} else 
 				JOptionPane.showMessageDialog(this, "DENIED", "FAILED VERIFICATION", JOptionPane.ERROR_MESSAGE);

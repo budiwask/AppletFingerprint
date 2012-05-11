@@ -121,6 +121,7 @@ public class CaptureForm extends JFrame
 
 	protected void init()
 	{
+		
 		capturer.addDataListener(new DPFPDataAdapter() {
 			public void dataAcquired(final DPFPDataEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {	public void run() {
