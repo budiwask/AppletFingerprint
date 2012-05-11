@@ -51,6 +51,7 @@ public class CaptureForm extends JFrame
 	public CaptureForm() {
 		setState(Frame.NORMAL);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		setUndecorated(true);
 		this.setTitle("Fingerprint Enrollment and Verification Sample");
 		setResizable(false);
 
@@ -112,6 +113,7 @@ public class CaptureForm extends JFrame
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
+
 	}
 	
 //	public CaptureForm(String uploadFilename) {

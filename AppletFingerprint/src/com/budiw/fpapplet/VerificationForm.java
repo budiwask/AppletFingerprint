@@ -91,8 +91,8 @@ public class VerificationForm extends CaptureForm
 			if(response.indexOf(VERIFICATION_KEYWORD) != -1) {
 				//JOptionPane.showMessageDialog(this, "Verified");
 				setVisible(false);
-				jso.call("updateFingerprintStatus", new String[] {"Verified"} );
-//				System.out.println(jso.toString());
+				if(jso!=null)
+					jso.call("updateFingerprintStatus", new String[] {"Verified"} );
 				System.exit(0);
 			} else 
 				JOptionPane.showMessageDialog(this, "DENIED", "FAILED VERIFICATION", JOptionPane.ERROR_MESSAGE);
