@@ -16,6 +16,7 @@ public class Main extends JApplet {
 	//Called when this applet is loaded into the browser.
     public void init() {
     	appletMode = this.getParameter("fpmode");
+    	//###### If launching from Eclipse, comment the line below
     	jso = JSObject.getWindow(this);
         //Execute a job on the event-dispatching thread; creating this applet's GUI.
         try {

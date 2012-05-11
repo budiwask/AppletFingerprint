@@ -111,9 +111,6 @@ public class VerificationForm extends CaptureForm
 		httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
 		HttpPost httppost = new HttpPost("https://localhost/upload.php");
-		//		BasicHttpParams fileParam = new BasicHttpParams();
-		//		fileParam.setParameter("templateName", filename);
-		//		httppost.setParams(fileParam);
 		File file = new File(featurePath);
 
 		//This will appear on $_FILES, uploading the challenger's fingerprint feature
@@ -134,9 +131,11 @@ public class VerificationForm extends CaptureForm
 		httppost.setEntity(mpEntity);
 		//		System.out.println("executing request " + httppost.getRequestLine());
 
+		//Execute POST, delete temp file, and read response
 		try {
 			HttpResponse response = httpclient.execute(httppost);
 			HttpEntity resEntity = response.getEntity();
+			file.delete();
 			//			System.out.println(response.getStatusLine());
 
 			//Print content of response, check for verification message

@@ -104,10 +104,11 @@ public class EnrollmentForm extends CaptureForm
 		httppost.setEntity(mpEntity);
 		//		System.out.println("executing request " + httppost.getRequestLine());
 
+		//Execute POST, delete temp file, and read the response
 		try {
 			HttpResponse response = httpclient.execute(httppost);
 			HttpEntity resEntity = response.getEntity();
-			
+			file.delete();
 //			System.out.println(response.getStatusLine());
 			
 			//Print content of response, check for verification message
