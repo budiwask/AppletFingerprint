@@ -71,9 +71,7 @@ public class VerificationForm extends CaptureForm
 	protected void init()
 	{
 		super.init();
-//		this.setTitle("Fingerprint Verification");
-		updateStatus(0);
-		
+		this.setTitle("Fingerprint Verification");
 	}
 
 	protected void process(DPFPSample sample) {
@@ -100,12 +98,6 @@ public class VerificationForm extends CaptureForm
 			} else
 				JOptionPane.showMessageDialog(this, "DENIED", "FAILED VERIFICATION", JOptionPane.ERROR_MESSAGE);
 		}
-	}
-
-	private void updateStatus(int FAR)
-	{
-		// Show "False accept rate" value
-		setStatus(String.format("False Accept Rate (FAR) = %1$s", FAR));
 	}
 
 	@SuppressWarnings("unused")

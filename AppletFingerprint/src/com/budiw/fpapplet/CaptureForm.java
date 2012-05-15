@@ -4,15 +4,22 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Random;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -45,11 +52,11 @@ public class CaptureForm extends JFrame
 	private JLabel picture = new JLabel();
 	private JTextField prompt = new JTextField();
 	private JTextArea log = new JTextArea();
-	private JTextField status = new JTextField("[status line]");
+	private JTextField status = new JTextField("");
+	private JButton badFingerprint = new JButton("Bad Fingerprint");
 
 	public CaptureForm() {
-		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		//		this.setTitle("Fingerprint Enrollment and Verification Sample");
+		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setResizable(false);
 
 		setLayout(new BorderLayout());
@@ -77,12 +84,23 @@ public class CaptureForm extends JFrame
 		status.setEditable(false);
 		status.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		status.setFont(UIManager.getFont("Panel.font"));
+		
+		badFingerprint.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) { onBadFingerprint(); }});
+		
+		JPanel buttonPane = new JPanel();
+		buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
+		buttonPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+		buttonPane.add(Box.createHorizontalGlue());
+		buttonPane.add(badFingerprint);
+		buttonPane.add(Box.createRigidArea(new Dimension(10, 0)));
 
 		JPanel right = new JPanel(new BorderLayout());
 		right.setBackground(Color.getColor("control"));
 		right.add(prompt, BorderLayout.PAGE_START);
 		right.add(logpane, BorderLayout.CENTER);
-
+		
+		
 		JPanel center = new JPanel(new BorderLayout());
 		center.setBackground(Color.getColor("control"));
 		center.add(right, BorderLayout.CENTER);
@@ -91,6 +109,7 @@ public class CaptureForm extends JFrame
 
 		setLayout(new BorderLayout());
 		add(center, BorderLayout.CENTER);
+		add(buttonPane, BorderLayout.PAGE_END);
 
 		this.addComponentListener(new ComponentAdapter() {
 			public void componentShown(ComponentEvent e) {
@@ -212,5 +231,27 @@ public class CaptureForm extends JFrame
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/* 
+	 * For patient with bad/missing fingerprints, we ask the clerk to enter a validation number 
+	 * to skip the procedure (to punish lazy clerks who don't want to enter fingerprints).
+	 */
+	protected void onBadFingerprint() {
+//		System.out.println("Clicked Bad Fingerprint");
+		Random rand = new Random();
+		int validationCode = 0;
+		int input = -1;
+		while (validationCode != input) {
+			validationCode = rand.nextInt(89999)+10000;
+			String inputString = JOptionPane.showInputDialog(this, "Enter Validation Code: " + validationCode);
+			try {
+				input = Integer.parseInt(inputString);
+			} catch(NumberFormatException e) {
+				input = -1;
+			}
+		}
+		System.out.println("Verified");
+		System.exit(0);
 	}
 }

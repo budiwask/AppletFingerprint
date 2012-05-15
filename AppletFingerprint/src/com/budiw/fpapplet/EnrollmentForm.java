@@ -42,8 +42,7 @@ public class EnrollmentForm extends CaptureForm
 	protected void init()
 	{
 		super.init();
-//		this.setTitle("Fingerprint Enrollment");
-		updateStatus();
+		this.setTitle("Fingerprint Enrollment");
 	}
 
 	protected void process(DPFPSample sample) {
