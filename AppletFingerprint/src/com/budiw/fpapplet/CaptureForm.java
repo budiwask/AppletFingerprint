@@ -3,7 +3,6 @@ package com.budiw.fpapplet;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.Image;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -49,13 +48,9 @@ public class CaptureForm extends JFrame
 	private JTextField status = new JTextField("[status line]");
 
 	public CaptureForm() {
-		setState(Frame.NORMAL);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		setUndecorated(true);
-		this.setTitle("Fingerprint Enrollment and Verification Sample");
+		//		this.setTitle("Fingerprint Enrollment and Verification Sample");
 		setResizable(false);
-
-		setTitle("Fingerprint Enrollment");
 
 		setLayout(new BorderLayout());
 		rootPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -69,8 +64,7 @@ public class CaptureForm extends JFrame
 		prompt.setBorder(
 				BorderFactory.createCompoundBorder(
 						BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0), "Prompt:"),
-						BorderFactory.createLoweredBevelBorder()
-						));
+						BorderFactory.createLoweredBevelBorder()));
 		log.setColumns(40);
 		log.setEditable(false);
 		log.setFont(UIManager.getFont("Panel.font"));
@@ -78,8 +72,7 @@ public class CaptureForm extends JFrame
 		logpane.setBorder(
 				BorderFactory.createCompoundBorder(
 						BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0), "Status:"),
-						BorderFactory.createLoweredBevelBorder()
-						));
+						BorderFactory.createLoweredBevelBorder()));
 
 		status.setEditable(false);
 		status.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -109,21 +102,14 @@ public class CaptureForm extends JFrame
 			}
 
 		});
-
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
-
 	}
-	
-//	public CaptureForm(String uploadFilename) {
-//		this();
-//		this.uploadFilename = uploadFilename;
-//	}
 
 	protected void init()
 	{
-		
+
 		capturer.addDataListener(new DPFPDataAdapter() {
 			public void dataAcquired(final DPFPDataEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {	public void run() {

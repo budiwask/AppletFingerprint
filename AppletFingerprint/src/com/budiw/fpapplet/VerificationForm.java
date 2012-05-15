@@ -65,14 +65,13 @@ public class VerificationForm extends CaptureForm
 
 	public VerificationForm() {
 		super();
-		setVisible(true);
 		setAlwaysOnTop(true);
 	}
 
 	protected void init()
 	{
 		super.init();
-		this.setTitle("Fingerprint Verification");
+//		this.setTitle("Fingerprint Verification");
 		updateStatus(0);
 		
 	}
@@ -91,13 +90,12 @@ public class VerificationForm extends CaptureForm
 			String response = uploadFeature();
 			if(response.indexOf(VERIFICATION_KEYWORD) != -1) {
 				//JOptionPane.showMessageDialog(this, "Verified");
-				setVisible(false);
 				if(jso!=null)
 					jso.call("updateFingerprintStatus", new String[] {"Verified"} );
 				System.exit(0);
 			} else if(response.indexOf(UNENROLLED_KEYWORD) != -1) {
-				JOptionPane.showMessageDialog(this, "Unenrolled\n Starting Enrollment Procedure...", "Not in Database", JOptionPane.ERROR_MESSAGE);
 				this.setVisible(false);
+				JOptionPane.showMessageDialog(this, "Unenrolled\n Starting Enrollment Procedure...", "Not in Database", JOptionPane.ERROR_MESSAGE);
 				new EnrollmentForm(templateName);
 			} else
 				JOptionPane.showMessageDialog(this, "DENIED", "FAILED VERIFICATION", JOptionPane.ERROR_MESSAGE);

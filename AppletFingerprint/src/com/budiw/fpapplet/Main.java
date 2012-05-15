@@ -39,7 +39,8 @@ public class Main extends JApplet {
     	if(appletMode.equalsIgnoreCase("enroll")) {
     		new EnrollmentForm(this.getParameter("templateName"));
     	}
-    	else
+    	else {
     		new VerificationForm(this.getParameter("templateName"), jso);
-	}
+    	}
+    }
 }

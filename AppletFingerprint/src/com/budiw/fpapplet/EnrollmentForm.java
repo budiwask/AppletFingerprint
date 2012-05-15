@@ -42,7 +42,7 @@ public class EnrollmentForm extends CaptureForm
 	protected void init()
 	{
 		super.init();
-		this.setTitle("Fingerprint Enrollment");
+//		this.setTitle("Fingerprint Enrollment");
 		updateStatus();
 	}
 
@@ -68,7 +68,6 @@ public class EnrollmentForm extends CaptureForm
 					stop();
 					writeFile(templatePath, enroller.getTemplate().serialize());
 					uploadTemplate();
-					setVisible(false);
 					System.exit(0);
 					break;
 
