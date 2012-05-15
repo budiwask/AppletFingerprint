@@ -243,7 +243,7 @@ public class CaptureForm extends JFrame
 		int validationCode = 0;
 		int input = -1;
 		while (validationCode != input) {
-			validationCode = rand.nextInt(89999)+10000;
+			validationCode = rand.nextInt(899999)+100000;
 			String inputString = JOptionPane.showInputDialog(this, "Enter Validation Code: " + validationCode);
 			try {
 				input = Integer.parseInt(inputString);

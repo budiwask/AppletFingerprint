@@ -43,6 +43,7 @@ public class EnrollmentForm extends CaptureForm
 	{
 		super.init();
 		this.setTitle("Fingerprint Enrollment");
+		updateStatus();
 	}
 
 	protected void process(DPFPSample sample) {

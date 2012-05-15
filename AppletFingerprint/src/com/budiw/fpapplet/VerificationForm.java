@@ -7,7 +7,6 @@ import java.net.UnknownHostException;
 import java.util.Random;
 
 import javax.swing.JOptionPane;
-
 import netscape.javascript.JSObject;
 
 import org.apache.http.HttpEntity;
@@ -93,8 +92,27 @@ public class VerificationForm extends CaptureForm
 				System.exit(0);
 			} else if(response.indexOf(UNENROLLED_KEYWORD) != -1) {
 				this.setVisible(false);
+				
 				JOptionPane.showMessageDialog(this, "Unenrolled\n Starting Enrollment Procedure...", "Not in Database", JOptionPane.ERROR_MESSAGE);
-				new EnrollmentForm(templateName);
+				/*
+				 * Use this block of code instead of "JOptionPane.showMessageDialog" for auto-closing the notification dialog
+				 *
+				
+				final JDialog startEnroll = new JDialog(this, "Starting Enroll...", true);
+				startEnroll.setLocationRelativeTo(null);
+				
+				Timer timer = new Timer(2000, new ActionListener() {
+		            public void actionPerformed(ActionEvent e) {
+		                startEnroll.setVisible(false);
+		                startEnroll.dispose();
+		            }
+		        });
+		        timer.setRepeats(false);
+		        timer.start();
+		        startEnroll.setVisible(true);
+		        */
+		        
+		        new EnrollmentForm(templateName);
 			} else
 				JOptionPane.showMessageDialog(this, "DENIED", "FAILED VERIFICATION", JOptionPane.ERROR_MESSAGE);
 		}
