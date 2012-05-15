@@ -33,6 +33,7 @@ public class VerificationForm extends CaptureForm
 	private static final long serialVersionUID = -9160876912046100450L;
 	private static final String DEFAULT_FEATURE_NAME = "inputfeature";
 	private static final String VERIFICATION_KEYWORD = "VERIFIED";
+	private static final String UNENROLLED_KEYWORD = "not found";
 	private String templateName = "";
 	private String featureName = DEFAULT_FEATURE_NAME;
 	private String featurePath = "";
@@ -94,7 +95,11 @@ public class VerificationForm extends CaptureForm
 				if(jso!=null)
 					jso.call("updateFingerprintStatus", new String[] {"Verified"} );
 				System.exit(0);
-			} else 
+			} else if(response.indexOf(UNENROLLED_KEYWORD) != -1) {
+				JOptionPane.showMessageDialog(this, "Unenrolled\n Starting Enrollment Procedure...", "Not in Database", JOptionPane.ERROR_MESSAGE);
+				this.setVisible(false);
+				new EnrollmentForm(templateName);
+			} else
 				JOptionPane.showMessageDialog(this, "DENIED", "FAILED VERIFICATION", JOptionPane.ERROR_MESSAGE);
 		}
 	}

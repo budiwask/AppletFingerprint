@@ -16,8 +16,9 @@ public class Main extends JApplet {
 	//Called when this applet is loaded into the browser.
     public void init() {
     	appletMode = this.getParameter("fpmode");
-    	//###### If launching from Eclipse, comment the line below
-    	jso = JSObject.getWindow(this);
+    	//###### If launching from Eclipse, comment the line below (Eclipse doesn't launch from JSO, unlike browsers)
+    	//How about OpenMRS compatibility?
+//    	jso = JSObject.getWindow(this);
         //Execute a job on the event-dispatching thread; creating this applet's GUI.
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
@@ -37,10 +38,8 @@ public class Main extends JApplet {
     private void createGUI() {
     	if(appletMode.equalsIgnoreCase("enroll")) {
     		new EnrollmentForm(this.getParameter("templateName"));
-
     	}
     	else
     		new VerificationForm(this.getParameter("templateName"), jso);
-    		
 	}
 }
