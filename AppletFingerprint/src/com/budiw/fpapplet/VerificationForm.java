@@ -38,10 +38,10 @@ public class VerificationForm extends CaptureForm
 	private String templateName = "";
 	private String featureName = DEFAULT_FEATURE_NAME;
 	private String featurePath = "";
-	private static JSObject jso = null;
+	
 
 	public VerificationForm(String templateName, JSObject jso) {
-		this();
+		this(jso);
 		VerificationForm.jso = jso;
 		if(templateName == "" || templateName == null)
 			this.templateName = EnrollmentForm.DEFAULT_TEMPLATE_NAME;
@@ -63,8 +63,8 @@ public class VerificationForm extends CaptureForm
 		featurePath = System.getProperty("java.io.tmpdir") + "\\"  + featureName + ".fpp";
 	}
 
-	public VerificationForm() {
-		super();
+	public VerificationForm(JSObject jso) {
+		super(jso);
 		setAlwaysOnTop(true);
 	}
 
@@ -112,15 +112,10 @@ public class VerificationForm extends CaptureForm
 		        startEnroll.setVisible(true);
 		        */
 		        
-		        new EnrollmentForm(templateName);
+		        new EnrollmentForm(templateName, jso);
 			} else
 				JOptionPane.showMessageDialog(this, "FAILED", "FAILED VERIFICATION", JOptionPane.ERROR_MESSAGE);
 		}
-	}
-
-	public static void notifyHTML(String result) {
-		if(jso!=null)
-			jso.call("updateFingerprintStatus", new String[] {result} );
 	}
 
 	@SuppressWarnings("unused")

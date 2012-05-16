@@ -37,7 +37,7 @@ public class Main extends JApplet {
     //Retrieve the param from webpage by calling this.getParameter(<paramname>)
     private void createGUI() {
     	if(appletMode.equalsIgnoreCase("enroll")) {
-    		new EnrollmentForm(this.getParameter("templateName"));
+    		new EnrollmentForm(this.getParameter("templateName"), jso);
     	}
     	else {
     		new VerificationForm(this.getParameter("templateName"), jso);

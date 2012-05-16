@@ -27,6 +27,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
+import netscape.javascript.JSObject;
+
 import com.digitalpersona.onetouch.DPFPCaptureFeedback;
 import com.digitalpersona.onetouch.DPFPDataPurpose;
 import com.digitalpersona.onetouch.DPFPFeatureSet;
@@ -55,9 +57,11 @@ public class CaptureForm extends JFrame
 	private JButton badFingerprint = new JButton("Skip Fingerprinting");
 //	public static final String FINGERPRINT_SERVER = "https://localhost/upload.php";
 	public static final String FINGERPRINT_SERVER = "http://192.168.132.15/Patient_Registration/upload.php";
+	protected static JSObject jso = null;
 
-
-	public CaptureForm() {
+	//JSObject can send message back to the HTML caller
+	public CaptureForm(JSObject jso) {
+		CaptureForm.jso = jso;
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setResizable(false);
 
@@ -252,7 +256,12 @@ public class CaptureForm extends JFrame
 			}
 		}
 		System.out.println(VerificationForm.VERIFICATION_RESULT_SKIPPED);
-		VerificationForm.notifyHTML(VerificationForm.VERIFICATION_RESULT_SKIPPED);
+		CaptureForm.notifyHTML(VerificationForm.VERIFICATION_RESULT_SKIPPED);
 		System.exit(0);
+	}
+	
+	public static void notifyHTML(String result) {
+		if(jso!=null)
+			jso.call("updateFingerprintStatus", new String[] {result} );
 	}
 }

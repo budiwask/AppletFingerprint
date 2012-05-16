@@ -3,6 +3,8 @@ package com.budiw.fpapplet;
 import java.io.File;
 import javax.swing.JOptionPane;
 
+import netscape.javascript.JSObject;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -27,10 +29,11 @@ public class EnrollmentForm extends CaptureForm
 	private static final long serialVersionUID = 7675828998942686645L;
 	private DPFPEnrollment enroller = DPFPGlobal.getEnrollmentFactory().createEnrollment();
 	public static final String DEFAULT_TEMPLATE_NAME = "template";
+	public static final String ENROLLMENT_RESULT_REGISTERED = "REGISTERED";
 	private final String templateName, templatePath;
 	
-	public EnrollmentForm(String templateName) {
-		super();
+	public EnrollmentForm(String templateName, JSObject jso) {
+		super(jso);
 		if(templateName == "" || templateName == null)
 			this.templateName = DEFAULT_TEMPLATE_NAME;
 		else
@@ -68,6 +71,7 @@ public class EnrollmentForm extends CaptureForm
 					stop();
 					writeFile(templatePath, enroller.getTemplate().serialize());
 					uploadTemplate();
+					notifyHTML(ENROLLMENT_RESULT_REGISTERED);
 					System.exit(0);
 					break;
 
@@ -110,7 +114,7 @@ public class EnrollmentForm extends CaptureForm
 			file.delete();
 //			System.out.println(response.getStatusLine());
 			
-			//Print content of response, check for verification message
+			//Print content of response, check for enrollment message
 			if (resEntity != null) {
 				String responsePayload = EntityUtils.toString(resEntity);
 				httpclient.getConnectionManager().shutdown();
