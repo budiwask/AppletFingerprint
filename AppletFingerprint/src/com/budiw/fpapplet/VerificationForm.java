@@ -31,17 +31,18 @@ public class VerificationForm extends CaptureForm
 {
 	private static final long serialVersionUID = -9160876912046100450L;
 	private static final String DEFAULT_FEATURE_NAME = "inputfeature";
-	private static final String VERIFICATION_KEYWORD = "VERIFIED";
+	public static final String VERIFICATION_RESULT_OK = "VERIFIED";
+	public static final String VERIFICATION_RESULT_SKIPPED = "SKIPPED";
+	public static final String VERIFICATION_RESULT_FAILED = "FAILED";
 	private static final String UNENROLLED_KEYWORD = "not found";
 	private String templateName = "";
 	private String featureName = DEFAULT_FEATURE_NAME;
 	private String featurePath = "";
-	private JSObject jso = null;
-
+	private static JSObject jso = null;
 
 	public VerificationForm(String templateName, JSObject jso) {
 		this();
-		this.jso = jso;
+		VerificationForm.jso = jso;
 		if(templateName == "" || templateName == null)
 			this.templateName = EnrollmentForm.DEFAULT_TEMPLATE_NAME;
 		else
@@ -70,7 +71,7 @@ public class VerificationForm extends CaptureForm
 	protected void init()
 	{
 		super.init();
-		this.setTitle("Fingerprint Verification");
+		this.setTitle("Verification");
 	}
 
 	protected void process(DPFPSample sample) {
@@ -85,15 +86,14 @@ public class VerificationForm extends CaptureForm
 			//Write to file and upload to server for comparison. Verification format must be *.fpp
 			writeFile(featurePath, features.serialize());
 			String response = uploadFeature();
-			if(response.indexOf(VERIFICATION_KEYWORD) != -1) {
+			if(response.indexOf(VERIFICATION_RESULT_OK) != -1) {
 				//JOptionPane.showMessageDialog(this, "Verified");
-				if(jso!=null)
-					jso.call("updateFingerprintStatus", new String[] {"Verified"} );
+				notifyHTML(VERIFICATION_RESULT_OK);
 				System.exit(0);
 			} else if(response.indexOf(UNENROLLED_KEYWORD) != -1) {
 				this.setVisible(false);
 				
-				JOptionPane.showMessageDialog(this, "Unenrolled\n Starting Enrollment Procedure...", "Not in Database", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, "Fingerprint not in the Database\n Press OK to enroll patient fingerprint", "Not in Database", JOptionPane.ERROR_MESSAGE);
 				/*
 				 * Use this block of code instead of "JOptionPane.showMessageDialog" for auto-closing the notification dialog
 				 *
@@ -114,8 +114,13 @@ public class VerificationForm extends CaptureForm
 		        
 		        new EnrollmentForm(templateName);
 			} else
-				JOptionPane.showMessageDialog(this, "DENIED", "FAILED VERIFICATION", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, "FAILED", "FAILED VERIFICATION", JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+	public static void notifyHTML(String result) {
+		if(jso!=null)
+			jso.call("updateFingerprintStatus", new String[] {result} );
 	}
 
 	@SuppressWarnings("unused")
@@ -123,7 +128,7 @@ public class VerificationForm extends CaptureForm
 		HttpClient httpclient = new DefaultHttpClient();
 		httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
-		HttpPost httppost = new HttpPost("https://localhost/upload.php");
+		HttpPost httppost = new HttpPost(CaptureForm.FINGERPRINT_SERVER);
 		File file = new File(featurePath);
 
 		//This will appear on $_FILES, uploading the challenger's fingerprint feature

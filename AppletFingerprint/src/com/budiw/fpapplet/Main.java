@@ -18,7 +18,7 @@ public class Main extends JApplet {
     	appletMode = this.getParameter("fpmode");
     	//###### If launching from Eclipse, comment the line below (Eclipse doesn't launch from JSO, unlike browsers)
     	//How about OpenMRS compatibility?
-//    	jso = JSObject.getWindow(this);
+    	jso = JSObject.getWindow(this);
         //Execute a job on the event-dispatching thread; creating this applet's GUI.
         try {
             SwingUtilities.invokeAndWait(new Runnable() {

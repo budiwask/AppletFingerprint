@@ -3,6 +3,7 @@ package com.budiw.fpapplet;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,8 +22,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -51,9 +50,12 @@ public class CaptureForm extends JFrame
 	private DPFPCapture capturer = DPFPGlobal.getCaptureFactory().createCapture();
 	private JLabel picture = new JLabel();
 	private JTextField prompt = new JTextField();
-	private JTextArea log = new JTextArea();
+//	private JTextArea log = new JTextArea();
 	private JTextField status = new JTextField("");
-	private JButton badFingerprint = new JButton("Bad Fingerprint");
+	private JButton badFingerprint = new JButton("Skip Fingerprinting");
+//	public static final String FINGERPRINT_SERVER = "https://localhost/upload.php";
+	public static final String FINGERPRINT_SERVER = "http://192.168.132.15/Patient_Registration/upload.php";
+
 
 	public CaptureForm() {
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -66,27 +68,25 @@ public class CaptureForm extends JFrame
 		picture.setBorder(BorderFactory.createLoweredBevelBorder());
 		prompt.setFont(UIManager.getFont("Panel.font"));
 		prompt.setEditable(false);
-		prompt.setColumns(40);
+		prompt.setColumns(30);
+		prompt.setFont(new Font("Ariel",Font.BOLD, 20));
 		prompt.setMaximumSize(prompt.getPreferredSize());
 		prompt.setBorder(
 				BorderFactory.createCompoundBorder(
-						BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0), "Prompt:"),
+						BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0), ""),
 						BorderFactory.createLoweredBevelBorder()));
-		log.setColumns(40);
-		log.setEditable(false);
-		log.setFont(UIManager.getFont("Panel.font"));
-		JScrollPane logpane = new JScrollPane(log);
-		logpane.setBorder(
-				BorderFactory.createCompoundBorder(
-						BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0), "Status:"),
-						BorderFactory.createLoweredBevelBorder()));
+//		log.setColumns(40);
+//		log.setEditable(false);
+//		log.setFont(UIManager.getFont("Panel.font"));
+//		JScrollPane logpane = new JScrollPane(log);
+//		logpane.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0), "Status:"), BorderFactory.createLoweredBevelBorder()));
 
 		status.setEditable(false);
 		status.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		status.setFont(UIManager.getFont("Panel.font"));
 		
 		badFingerprint.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) { onBadFingerprint(); }});
+            public void actionPerformed(ActionEvent e) { onSkipFingerprint(); }});
 		
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
@@ -98,7 +98,7 @@ public class CaptureForm extends JFrame
 		JPanel right = new JPanel(new BorderLayout());
 		right.setBackground(Color.getColor("control"));
 		right.add(prompt, BorderLayout.PAGE_START);
-		right.add(logpane, BorderLayout.CENTER);
+//		right.add(logpane, BorderLayout.CENTER);
 		
 		
 		JPanel center = new JPanel(new BorderLayout());
@@ -133,7 +133,7 @@ public class CaptureForm extends JFrame
 			public void dataAcquired(final DPFPDataEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {	public void run() {
 					makeReport("The fingerprint sample was captured.");
-					setPrompt("Scan the same fingerprint again.");
+					setPrompt("Scan the same finger again.");
 					process(e.getSample());
 				}});
 			}
@@ -141,12 +141,12 @@ public class CaptureForm extends JFrame
 		capturer.addReaderStatusListener(new DPFPReaderStatusAdapter() {
 			public void readerConnected(final DPFPReaderStatusEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {	public void run() {
-					makeReport("The fingerprint reader was connected.");
+					setPrompt("Scan the patient fingerprint.");
 				}});
 			}
 			public void readerDisconnected(final DPFPReaderStatusEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {	public void run() {
-					makeReport("The fingerprint reader was disconnected.");
+					setPrompt("Connect Fingerprint Reader.");
 				}});
 			}
 		});
@@ -183,7 +183,7 @@ public class CaptureForm extends JFrame
 	protected void start()
 	{
 		capturer.startCapture();
-		setPrompt("Using the fingerprint reader, scan your fingerprint.");
+		setPrompt("Scan patient's fingerprint");
 	}
 
 	protected void stop()
@@ -198,7 +198,7 @@ public class CaptureForm extends JFrame
 		prompt.setText(string);
 	}
 	public void makeReport(String string) {
-		log.append(string + "\n");
+//		log.append(string + "\n");
 	}
 
 	public void drawPicture(Image image) {
@@ -237,7 +237,7 @@ public class CaptureForm extends JFrame
 	 * For patient with bad/missing fingerprints, we ask the clerk to enter a validation number 
 	 * to skip the procedure (to punish lazy clerks who don't want to enter fingerprints).
 	 */
-	protected void onBadFingerprint() {
+	protected void onSkipFingerprint() {
 //		System.out.println("Clicked Bad Fingerprint");
 		Random rand = new Random();
 		int validationCode = 0;
@@ -251,7 +251,8 @@ public class CaptureForm extends JFrame
 				input = -1;
 			}
 		}
-		System.out.println("Verified");
+		System.out.println(VerificationForm.VERIFICATION_RESULT_SKIPPED);
+		VerificationForm.notifyHTML(VerificationForm.VERIFICATION_RESULT_SKIPPED);
 		System.exit(0);
 	}
 }

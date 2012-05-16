@@ -42,7 +42,7 @@ public class EnrollmentForm extends CaptureForm
 	protected void init()
 	{
 		super.init();
-		this.setTitle("Fingerprint Enrollment");
+		this.setTitle("Enrollment");
 		updateStatus();
 	}
 
@@ -75,7 +75,7 @@ public class EnrollmentForm extends CaptureForm
 					enroller.clear();
 					stop();
 					updateStatus();
-					JOptionPane.showMessageDialog(EnrollmentForm.this, "The fingerprint template is not valid. Repeat fingerprint enrollment.", "Fingerprint Enrollment", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(EnrollmentForm.this, "Enrollment failed. Repeat fingerprint enrollment.", "Fingerprint Enrollment", JOptionPane.ERROR_MESSAGE);
 					start();
 					break;
 			}
@@ -92,7 +92,7 @@ public class EnrollmentForm extends CaptureForm
 		HttpClient httpclient = new DefaultHttpClient();
 		httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
-		HttpPost httppost = new HttpPost("https://localhost/upload.php");
+		HttpPost httppost = new HttpPost(CaptureForm.FINGERPRINT_SERVER);
 		File file = new File(templatePath);
 
 		//This will appear on $_FILES
