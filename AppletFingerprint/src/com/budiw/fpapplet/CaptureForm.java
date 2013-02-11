@@ -79,11 +79,6 @@ public class CaptureForm extends JFrame
 				BorderFactory.createCompoundBorder(
 						BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0), ""),
 						BorderFactory.createLoweredBevelBorder()));
-//		log.setColumns(40);
-//		log.setEditable(false);
-//		log.setFont(UIManager.getFont("Panel.font"));
-//		JScrollPane logpane = new JScrollPane(log);
-//		logpane.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0), "Status:"), BorderFactory.createLoweredBevelBorder()));
 
 		status.setEditable(false);
 		status.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -102,7 +97,6 @@ public class CaptureForm extends JFrame
 		JPanel right = new JPanel(new BorderLayout());
 		right.setBackground(Color.getColor("control"));
 		right.add(prompt, BorderLayout.PAGE_START);
-//		right.add(logpane, BorderLayout.CENTER);
 		
 		
 		JPanel center = new JPanel(new BorderLayout());
