@@ -4,23 +4,21 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Random;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -51,29 +49,28 @@ public class CaptureForm extends JFrame
 	private static final long serialVersionUID = 3389476239431661943L;
 	private DPFPCapture capturer = DPFPGlobal.getCaptureFactory().createCapture();
 	private JLabel picture = new JLabel();
-	private JTextField prompt = new JTextField();
+	private JTextField prompt = new JTextField(15);
 //	private JTextArea log = new JTextArea();
 	private JTextField status = new JTextField("");
-	private JButton badFingerprint = new JButton("Skip Fingerprinting");
-//	public static final String FINGERPRINT_SERVER = "https://localhost/upload.php";
-	public static final String FINGERPRINT_SERVER = "http://192.168.132.15/Patient_Registration/upload.php";
+//	private JButton badFingerprint = new JButton("Skip Fingerprinting");
+	public static final String FINGERPRINT_SERVER = "http://localhost/mbdd/upload.php";
+//	public static final String FINGERPRINT_SERVER = "http://192.168.132.15/Patient_Registration/upload.php";
 	protected static JSObject jso = null;
 
 	//JSObject can send message back to the HTML caller
 	public CaptureForm(JSObject jso) {
 		CaptureForm.jso = jso;
-		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setResizable(false);
 
 		setLayout(new BorderLayout());
-		rootPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		//rootPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 		picture.setPreferredSize(new Dimension(240, 280));
 		picture.setBorder(BorderFactory.createLoweredBevelBorder());
 		prompt.setFont(UIManager.getFont("Panel.font"));
 		prompt.setEditable(false);
-		prompt.setColumns(30);
-		prompt.setFont(new Font("Ariel",Font.BOLD, 20));
+		prompt.setFont(new Font("Ariel",Font.BOLD, 14));
 		prompt.setMaximumSize(prompt.getPreferredSize());
 		prompt.setBorder(
 				BorderFactory.createCompoundBorder(
@@ -84,26 +81,25 @@ public class CaptureForm extends JFrame
 		status.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		status.setFont(UIManager.getFont("Panel.font"));
 		
-		badFingerprint.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) { onSkipFingerprint(); }});
+		//badFingerprint.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { onSkipFingerprint(); }});
 		
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
 		buttonPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 		buttonPane.add(Box.createHorizontalGlue());
-		buttonPane.add(badFingerprint);
+		//buttonPane.add(badFingerprint);
 		buttonPane.add(Box.createRigidArea(new Dimension(10, 0)));
+		
+		
 
-		JPanel right = new JPanel(new BorderLayout());
-		right.setBackground(Color.getColor("control"));
-		right.add(prompt, BorderLayout.PAGE_START);
 		
 		
 		JPanel center = new JPanel(new BorderLayout());
 		center.setBackground(Color.getColor("control"));
-		center.add(right, BorderLayout.CENTER);
 		center.add(picture, BorderLayout.LINE_START);
+		center.add(prompt, BorderLayout.PAGE_START);
 		center.add(status, BorderLayout.PAGE_END);
+		
 
 		setLayout(new BorderLayout());
 		add(center, BorderLayout.CENTER);
@@ -131,7 +127,7 @@ public class CaptureForm extends JFrame
 			public void dataAcquired(final DPFPDataEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {	public void run() {
 					makeReport("The fingerprint sample was captured.");
-					setPrompt("Scan the same finger again.");
+					setPrompt("Scan again.");
 					process(e.getSample());
 				}});
 			}
@@ -139,12 +135,12 @@ public class CaptureForm extends JFrame
 		capturer.addReaderStatusListener(new DPFPReaderStatusAdapter() {
 			public void readerConnected(final DPFPReaderStatusEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {	public void run() {
-					setPrompt("Scan the patient fingerprint.");
+					setPrompt("Scan finger.");
 				}});
 			}
 			public void readerDisconnected(final DPFPReaderStatusEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {	public void run() {
-					setPrompt("Connect Fingerprint Reader.");
+					setPrompt("Connect Reader.");
 				}});
 			}
 		});
@@ -181,7 +177,7 @@ public class CaptureForm extends JFrame
 	protected void start()
 	{
 		capturer.startCapture();
-		setPrompt("Scan patient's fingerprint");
+		setPrompt("Scan finger");
 	}
 
 	protected void stop()
@@ -231,31 +227,37 @@ public class CaptureForm extends JFrame
 		}
 	}
 	
+	protected void writeImage(String filepath, Image image) {
+		try {
+			BufferedImage bi = new BufferedImage(picture.getIcon().getIconWidth(),picture.getIcon().getIconHeight(),BufferedImage.TYPE_INT_RGB);
+			Graphics2D g = bi.createGraphics();
+			g.drawImage(image.getScaledInstance(picture.getWidth(), picture.getHeight(), Image.SCALE_DEFAULT), 0, 0, null);
+			g.dispose();
+		    File outputfile = new File(filepath);
+		    ImageIO.write(bi, "png", outputfile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	/* 
 	 * For patient with bad/missing fingerprints, we ask the clerk to enter a validation number 
 	 * to skip the procedure (to punish lazy clerks who don't want to enter fingerprints).
 	 */
 	protected void onSkipFingerprint() {
 //		System.out.println("Clicked Bad Fingerprint");
-		Random rand = new Random();
-		int validationCode = 0;
-		int input = -1;
-		while (validationCode != input) {
-			validationCode = rand.nextInt(899999)+100000;
-			String inputString = JOptionPane.showInputDialog(this, "Enter Validation Code: " + validationCode);
-			try {
-				input = Integer.parseInt(inputString);
-			} catch(NumberFormatException e) {
-				input = -1;
-			}
-		}
-		System.out.println(VerificationForm.VERIFICATION_RESULT_SKIPPED);
-		CaptureForm.notifyHTML(VerificationForm.VERIFICATION_RESULT_SKIPPED);
-		System.exit(0);
+//		setPrompt("hello");
+		//System.exit(0);
 	}
 	
 	public static void notifyHTML(String result) {
 		if(jso!=null)
 			jso.call("updateFingerprintStatus", new String[] {result} );
+	}
+	
+	public static void htmlLoadImage(String filename) {
+		if(jso!=null)
+			jso.call("loadImage", new String[] {filename} );
 	}
 }

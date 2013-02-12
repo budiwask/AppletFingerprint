@@ -65,13 +65,13 @@ public class VerificationForm extends CaptureForm
 
 	public VerificationForm(JSObject jso) {
 		super(jso);
-		setAlwaysOnTop(true);
+		//setAlwaysOnTop(true);
 	}
 
 	protected void init()
 	{
 		super.init();
-		this.setTitle("Verification");
+		//sthis.setTitle("Verification");
 	}
 
 	protected void process(DPFPSample sample) {

@@ -30,7 +30,7 @@ public class EnrollmentForm extends CaptureForm
 	private DPFPEnrollment enroller = DPFPGlobal.getEnrollmentFactory().createEnrollment();
 	public static final String DEFAULT_TEMPLATE_NAME = "template";
 	public static final String ENROLLMENT_RESULT_REGISTERED = "REGISTERED";
-	private final String templateName, templatePath;
+	private String templateName, templatePath;
 	
 	public EnrollmentForm(String templateName, JSObject jso) {
 		super(jso);
@@ -38,14 +38,14 @@ public class EnrollmentForm extends CaptureForm
 			this.templateName = DEFAULT_TEMPLATE_NAME;
 		else
 			this.templateName = templateName;
-		this.templatePath = System.getProperty("java.io.tmpdir") + "\\" + this.templateName + ".fpt";
+		this.templatePath = System.getProperty("java.io.tmpdir") + this.templateName + ".png";
 		setAlwaysOnTop(true);
 	}
 	
 	protected void init()
 	{
 		super.init();
-		this.setTitle("Enrollment");
+		//this.setTitle("Enrollment");
 		updateStatus();
 	}
 
@@ -69,9 +69,9 @@ public class EnrollmentForm extends CaptureForm
 			{
 				case TEMPLATE_STATUS_READY:	// report success and stop capturing
 					stop();
-					writeFile(templatePath, enroller.getTemplate().serialize());
+					//writeFile(templatePath, enroller.getTemplate().serialize());
+					writeImage(templatePath, DPFPGlobal.getSampleConversionFactory().createImage(sample));
 					uploadTemplate();
-					notifyHTML(ENROLLMENT_RESULT_REGISTERED);
 					System.exit(0);
 					break;
 
@@ -116,9 +116,11 @@ public class EnrollmentForm extends CaptureForm
 			
 			//Print content of response, check for enrollment message
 			if (resEntity != null) {
+				@SuppressWarnings("unused")
 				String responsePayload = EntityUtils.toString(resEntity);
 				httpclient.getConnectionManager().shutdown();
-				System.out.println(responsePayload);
+				htmlLoadImage(templateName);
+				
 			} 
 			if (resEntity != null) {
 				EntityUtils.consume(resEntity);
@@ -127,6 +129,7 @@ public class EnrollmentForm extends CaptureForm
 			e.printStackTrace();
 		}
 		httpclient.getConnectionManager().shutdown();
+		System.exit(0);
 	}
 	
 }
